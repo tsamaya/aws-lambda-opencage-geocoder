@@ -1,0 +1,31 @@
+service: aws-lambda-opencage-geocoder
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+# you can overwrite defaults here
+#  stage: dev
+#  region: us-east-1
+
+plugins:
+  - serverless-env-generator
+  - serverless-offline # serverless-offline needs to be last in the list
+
+# Plugin config goes into custom:
+custom:
+  envFiles: #YAML files used to create .env file
+    - environment.yml
+
+
+functions:
+  hello:
+    handler: handler.hello
+    events: # The Events that trigger this Function
+      - http: # This creates an API Gateway HTTP endpoint which can be used to trigger this function.  Learn more in "events/apigateway"
+          path: hello # Path for this endpoint
+          method: get # HTTP method for this endpoint

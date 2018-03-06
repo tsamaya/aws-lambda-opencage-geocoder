@@ -1,0 +1,45 @@
+{
+  "name": "aws-lambda-opencage-geocoder",
+  "version": "0.1.0",
+  "description": "AWS Lambda Wrapper for OpenCage Data Geocoder API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsamaya/aws-lambda-opencage-geocoder.git"
+  },
+  "keywords": [
+    "geocoder",
+    "api",
+    "opencage",
+    "opencagedata",
+    "serverless",
+    "aws",
+    "lambda"
+  ],
+  "author": "Arnaud Ferrand",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsamaya/aws-lambda-opencage-geocoder/issues"
+  },
+  "homepage": "https://github.com/tsamaya/aws-lambda-opencage-geocoder#readme",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "opencage-api-client": "^0.1.0"
+  },
+  "devDependencies": {
+    "codecov": "^3.0.0",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jest": "^21.13.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "jest": "^22.4.2",
+    "prettier": "^1.11.1",
+    "serverless-env-generator": "^1.1.2",
+    "serverless-offline": "^3.18.0"
+  }
+}
