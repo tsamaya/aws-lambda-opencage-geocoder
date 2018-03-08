@@ -29,3 +29,9 @@ functions:
       - http: # This creates an API Gateway HTTP endpoint which can be used to trigger this function.  Learn more in "events/apigateway"
           path: hello # Path for this endpoint
           method: get # HTTP method for this endpoint
+  geocode:
+    handler: opencage.geocode
+    events: # The Events that trigger this Function
+      - http: # This creates an API Gateway HTTP endpoint which can be used to trigger this function.  Learn more in "events/apigateway"
+          path: geocode # Path for this endpoint
+          method: get # HTTP method for this endpoint
