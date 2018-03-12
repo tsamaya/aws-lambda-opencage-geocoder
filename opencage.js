@@ -1,5 +1,28 @@
-require('dotenv').config();
 const opencage = require('opencage-api-client');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const doRequest = (query, callback) => {
+  const params = query;
+  params.key = process.env.OCD_API_KEY;
+  const pretty = query.pretty === '1' ? '  ' : null;
+  opencage
+    .geocode(params)
+    .then(data => {
+      callback(null, {
+        statusCode: 200,
+        body: JSON.stringify(data, null, pretty),
+      });
+    })
+    .catch(err => {
+      // console.log(err);
+      callback(null, {
+        statusCode: 400,
+        body: JSON.stringify(err),
+      });
+    });
+};
 
 /**
  * entry point
@@ -18,21 +41,14 @@ module.exports.geocode = (event, context, callback) => {
     });
     return;
   }
-  const query = event.queryStringParameters;
-  query.key = process.env.OCD_API_KEY;
-  opencage
-    .geocode(query)
-    .then(data => {
-      callback(null, {
-        statusCode: 200,
-        body: JSON.stringify(data),
-      });
-    })
-    .catch(err => {
-      // console.log(err);
-      callback(null, {
-        statusCode: 400,
-        body: JSON.stringify(err),
-      });
+  if (typeof process.env.OCD_API_KEY === 'undefined') {
+    callback(null, {
+      statusCode: 400,
+      body: JSON.stringify({
+        response: { status: { code: 403, message: 'missing API key' } },
+      }),
     });
+    return;
+  }
+  doRequest(event.queryStringParameters, callback);
 };
