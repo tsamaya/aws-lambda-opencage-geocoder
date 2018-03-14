@@ -4,7 +4,12 @@
   "description": "AWS Lambda Wrapper for OpenCage Data Geocoder API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "codecov": "codecov",
+    "coverage": "npm run test && npm run codecov",
+    "lint": "eslint .",
+    "start": "serverless offline start",
+    "pretest": "npm run lint",
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",

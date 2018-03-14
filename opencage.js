@@ -24,6 +24,21 @@ const doRequest = (query, callback) => {
     });
 };
 
+const errorQueryString = {
+  statusCode: 400,
+  body: JSON.stringify({
+    error: 400,
+    message: "Couldn't read query parameters",
+  }),
+};
+
+const errorAPIKey = {
+  statusCode: 400,
+  body: JSON.stringify({
+    response: { status: { code: 403, message: 'missing API key' } },
+  }),
+};
+
 /**
  * entry point
  * @param  {object}   event    [description]
@@ -32,23 +47,16 @@ const doRequest = (query, callback) => {
  */
 module.exports.geocode = (event, context, callback) => {
   if (!event.queryStringParameters) {
-    callback(null, {
-      statusCode: 400,
-      body: JSON.stringify({
-        error: 400,
-        message: "Couldn't read query parameters",
-      }),
-    });
+    callback(null, errorQueryString);
     return;
   }
   if (typeof process.env.OCD_API_KEY === 'undefined') {
-    callback(null, {
-      statusCode: 400,
-      body: JSON.stringify({
-        response: { status: { code: 403, message: 'missing API key' } },
-      }),
-    });
+    callback(null, errorAPIKey);
     return;
   }
   doRequest(event.queryStringParameters, callback);
 };
+
+module.exports.doRequest = doRequest;
+module.exports.errorQueryString = errorQueryString;
+module.exports.errorAPIKey = errorAPIKey;
