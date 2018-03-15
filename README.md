@@ -6,7 +6,7 @@ This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambd
 [![codecov](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder/branch/master/graph/badge.svg)](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-The following how-to section describes step by steps how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; then later, the quick start section describes how to just use this repo where the function is ready to use.
+The following how-to section describes step by steps how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; then later, the [quick start](#quick-start) section describes how to just use this repo where the ready to use function.
 
 ## How to create a AWS Lambda function
 
@@ -119,17 +119,15 @@ don't forget for the production environment to add the according stage
 
 generate env file
 
-    $ serverless env generate
-
 ```shell
+$ serverless env generate
 Serverless: Creating .env file...
 ```    
 
 Quick test
 
-	$ sls offline start
-
-```
+```shell
+$ sls offline start
 Serverless: Starting Offline: dev/us-east-1.
 
 Serverless: Routes for hello:
@@ -151,9 +149,11 @@ Let's start coding
 
 create a new file
 
+```shell
 $ touch opencage.js
+```
 
-edit this file
+Edit this file
 
 ```javascript
 require('dotenv').config();
@@ -195,7 +195,7 @@ module.exports.geocode = (event, context, callback) => {
 };
 ```
 
-edit the `serverless.yml` file adding align with the hello function:
+edit the `serverless.yml` file adding the following lines alignes with the hello function:
 ```yml
   geocode:
     handler: opencage.geocode
@@ -204,18 +204,17 @@ edit the `serverless.yml` file adding align with the hello function:
           path: geocode # Path for this endpoint
           method: get # HTTP method for this endpoint
 ```
+:warning: indentation is important
 
 now test it with
 
-    $ sls offline start
+```shell
+$ sls offline start
 
-then
+$ curl -i -v "http://localhost:3000/geocode?q=tour%20eiffel"
 
-    $ curl -i -v "http://localhost:3000/geocode?q=tour%20eiffel"
-
-    $ curl -i -v "http://localhost:3000/geocode?q=tour%20eiffel&limit=3&language=fr"
-
-
+$ curl -i -v "http://localhost:3000/geocode?q=tour%20eiffel&limit=3&language=fr"
+```
 
 ### deploy
 
@@ -257,11 +256,13 @@ functions:
 
 we can now test it:
 
+```shell
 $ curl -i -v "https://jvkdf2pe18.execute-api.us-east-1.amazonaws.com/dev/geocode?q=tour%20eiffel"
 
 $ curl -i -v "https://jvkdf2pe18.execute-api.us-east-1.amazonaws.com/dev/geocode?q=tour%20eiffel&limit=3&language=fr"
+```
 
-### to go further
+## To go further
 
 we will now add a linter, a code style formatter and some unit tests:
 
@@ -282,7 +283,342 @@ $ npm i -D prettier
 $ npm i -D jest codecov
 ```
 
-*TBC*
+first edit the `package.json` file script section
+
+```
+"scripts": {
+  "codecov": "codecov",
+  "coverage": "npm run test && npm run codecov",
+  "lint": "eslint .",
+  "start": "serverless offline start",
+  "pretest": "npm run lint",
+  "test": "jest --coverage",
+  "test:watch": "npm test -- --watch"
+},
+```
+
+create an `.eslintignore` file
+
+```
+coverage/
+temp/
+```
+
+create an `.eslintrc.js` file
+
+```javascript
+module.exports = {
+  extends: ['airbnb-base', 'plugin:jest/recommended', 'plugin:prettier/recommended']
+};
+```
+
+To avoid linter issues with the `hello` handler, you can delete or at least comment it out. Do not forget to remove on comment also the function part in the `serverless.yml` file.
+
+create an empty `.prettierignore` file
+
+create a `.prettierrc.js` file
+
+```javascript
+module.exports = {
+  singleQuote: true,
+  trailingComma: 'es5'
+};
+```
+
+*Nb*: without a git pre-commit hook here, the prettier configuration is only useful when your texteditor or IDE is configured to use prettier (see [prettier documentation](https://prettier.io/docs/en/editors.html))
+
+Create two folders : `__tests__` and `__mocks__`
+
+    $ mkdir __tests__ __mocks__
+
+Create a first test file
+
+    $ touch __tests__/integration.spec.js
+
+```javascript
+const opencage = require('../opencage');
+
+describe('Integration Tests', () => {
+  if (process.env.CI) {
+    // skip this test on CI,
+    //    then eslint disable line to prevent jest/no-disabled-tests
+    test.skip('CI : skipping integration tests'); // eslint-disable-line
+    return;
+  }
+  test('geocode `Brandenburg Gate`', done => {
+    const event = {
+      queryStringParameters: { q: 'Brandenburg Gate' },
+    };
+    const context = null;
+    const callback = (ctx, data) => {
+      expect(data).toBeTruthy();
+      done();
+    };
+    opencage.geocode(event, context, callback);
+  });
+  test('geocode `Brandenburg Gate` with pretty', done => {
+    const event = {
+      queryStringParameters: { q: 'Brandenburg Gate', pretty: '1' },
+    };
+    const context = null;
+    const callback = (ctx, data) => {
+      expect(data).toBeTruthy();
+      done();
+    };
+    opencage.geocode(event, context, callback);
+  });
+});
+```
+
+run the tests
+
+    $ npm test
+
+NB: remember to generate the .env file before running the test
+
+```shell
+
+> aws-lambda-opencage-geocoder@0.1.0 pretest /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> npm run lint
+
+
+> aws-lambda-opencage-geocoder@0.1.0 lint /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> eslint .
+
+
+> aws-lambda-opencage-geocoder@0.1.0 test /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> jest --coverage
+
+ PASS  __tests__/integration.spec.js
+-------------|----------|----------|----------|----------|-------------------|
+File         |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+-------------|----------|----------|----------|----------|-------------------|
+All files    |      xxx |      xxx |      xxx |      xxx |                   |
+ opencage.js |      xxx |      xxx |      xxx |      xxx |  X,X              |
+-------------|----------|----------|----------|----------|-------------------|
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        0.608s
+Ran all test suites.
+```
+
+Isn't it great ?
+
+As we disabled the test when running in CI you can imagine we will create test for CI mocking the OpenCage real API request.
+
+    $ touch __mocks__/opencage-api-client.js
+
+```javascript
+const opencageAPI = jest.genMockFromModule('opencage-api-client');
+
+const geocode = query =>
+  new Promise((resolve, reject) => {
+    if (query.q === '52.5162767 13.3777025') {
+      resolve({ok: 'ok'});
+    } else if (query.q === 'networkerror') {
+      reject(new Error('Mocked error'));
+    } else {
+      reject(new Error('Unexpected Mocked error'));
+    }
+  });
+
+opencageAPI.geocode = geocode;
+
+module.exports = opencageAPI;
+```
+
+now we will use that mocked module.
+
+    $ touch __tests__/geocode.spec.js
+
+```javascript
+const opencage = require('../opencage');
+
+describe('OpenCage Lib suite', () => {
+  describe('Mocked Tests', () => {
+    beforeAll(() => {
+      jest.mock('opencage-api-client');
+    });
+    afterAll(() => {
+      jest.unmock('opencage-api-client');
+    });
+    test('reverse geocode `Brandenburg Gate`', done => {
+      const event = {
+        queryStringParameters: { q: '52.5162767 13.3777025' },
+      };
+      const context = null;
+      const callback = (ctx, data) => {
+        // console.log(data); // eslint-disable-line
+        expect(data).toBeTruthy();
+        done();
+      };
+      opencage.geocode(event, context, callback);
+    });
+    test('rejection', done => {
+      const event = {
+        queryStringParameters: { q: 'networkerror' },
+      };
+      const context = null;
+      const callback = (ctx, data) => {
+        expect(data).toBeTruthy();
+        done();
+      };
+      opencage.geocode(event, context, callback);
+    });
+  });
+});
+```
+
+let's improve the code coverage by adding some rainy tests to `geocode.spec.js` file.
+
+```javascript
+describe('Rainy Tests', () => {
+  describe('#Query String', () => {
+    test('no queryStringParameters', done => {
+      const event = {};
+      const context = null;
+      const callback = (ctx, data) => {
+        expect(data).toEqual({
+          statusCode: 400,
+          body: JSON.stringify({
+            error: 400,
+            message: "Couldn't read query parameters",
+          }),
+        });
+        done();
+      };
+      opencage.geocode(event, context, callback);
+    });
+  });
+  describe('#Environment', () => {
+    let backup;
+    beforeAll(() => {
+      backup = process.env.OCD_API_KEY;
+      delete process.env.OCD_API_KEY;
+    });
+    afterAll(() => {
+      process.env.OCD_API_KEY = backup;
+    });
+    test('no env var', done => {
+      const event = {
+        queryStringParameters: { q: 'berlin' },
+      };
+      const context = null;
+      const callback = (ctx, data) => {
+        expect(data).toEqual({
+          statusCode: 400,
+          body: JSON.stringify({
+            response: { status: { code: 403, message: 'missing API key' } },
+          }),
+        });
+        done();
+      };
+      opencage.geocode(event, context, callback);
+    });
+  });
+});
+```
+
+now to prevent errors on missing `.env` file, create a dedicated test
+
+    $ touch __tests__/environment.spec.js
+
+```javascript
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+describe('Environment VARs suite', () => {
+  if (process.env.CI) {
+    // skip this test on CI,
+    //    then eslint disable line to prevent jest/no-disabled-tests
+    test.skip('CI : skipping integration tests'); // eslint-disable-line
+    return;
+  }
+  test('OCD_API_KEY exisits', () => {
+    expect(process.env.OCD_API_KEY).toBeTruthy();
+  });
+});
+```
+
+run the tests
+
+```
+$ npm test
+
+> aws-lambda-opencage-geocoder@0.1.0 pretest /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> npm run lint
+
+
+> aws-lambda-opencage-geocoder@0.1.0 lint /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> eslint .
+
+
+> aws-lambda-opencage-geocoder@0.1.0 test /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> jest --coverage
+
+ PASS  __tests__/environment.spec.js
+ PASS  __tests__/geocode.spec.js
+ PASS  __tests__/integration.spec.js
+-------------|----------|----------|----------|----------|-------------------|
+File         |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+-------------|----------|----------|----------|----------|-------------------|
+All files    |      100 |      100 |      100 |      100 |                   |
+ opencage.js |      100 |      100 |      100 |      100 |                   |
+-------------|----------|----------|----------|----------|-------------------|
+
+Test Suites: 3 passed, 3 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        1.306s
+```
+
+Not to bad ?
+
+I hope you enjoyed this tutorial. Feel free to reach me with whatever channel suits you for comment issue, or coffee!
+
+## Quick start
+
+check the [prerequisite](#Prerequisites) and the [AWS-CLI configuration](#AWS---Credentials)
+
+#### Clone the repo
+
+- clone this repo
+- `$ cd path/to/this/repo`
+
+### Setup
+
+    $ npm i
+
+create `environment.yml` file
+
+    $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage dev
+
+create .env file
+
+    $ env generate
+
+
+### Running locally
+
+    $ sls offline start
+
+### Local tests
+
+```
+$ curl -i -v "http://localhost:3000/geocode?q=berlin"
+
+$ curl -i -v "http://localhost:3000/geocode?q=berlin&limit=3&language=fr"
+```
+
+### deploy
+
+    $ sls --aws-profile <namedProfile> --stage <stage> deploy
+
+### display logs
+
 
 ## Resources
 
