@@ -1,4 +1,4 @@
-const opencage = require('opencage-api-client');
+const opencageAPI = require('opencage-api-client');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -7,7 +7,7 @@ const doRequest = (query, callback) => {
   const params = query;
   params.key = process.env.OCD_API_KEY;
   const pretty = query.pretty === '1' ? '  ' : null;
-  opencage
+  opencageAPI
     .geocode(params)
     .then(data => {
       callback(null, {
@@ -16,7 +16,7 @@ const doRequest = (query, callback) => {
       });
     })
     .catch(err => {
-      // console.log(err);
+      // console.log(err); // eslint-disable-line
       callback(null, {
         statusCode: 400,
         body: JSON.stringify(err),
@@ -57,6 +57,5 @@ module.exports.geocode = (event, context, callback) => {
   doRequest(event.queryStringParameters, callback);
 };
 
-module.exports.doRequest = doRequest;
 module.exports.errorQueryString = errorQueryString;
 module.exports.errorAPIKey = errorAPIKey;
