@@ -2,6 +2,9 @@
 
 This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambda/) function to wrap OpenCage Data [Geocoder](https://geocoder.opencagedata.com/) API.
 
+[![codecov](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder/branch/master/graph/badge.svg)](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
 The following how-to section describes step by steps how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; then later, the quick start section describes how to just use this repo where the function is ready to use.
 
 ## How to create a AWS Lambda function
