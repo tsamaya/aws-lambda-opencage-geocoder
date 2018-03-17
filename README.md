@@ -176,6 +176,15 @@ module.exports.geocode = (event, context, callback) => {
     });
     return;
   }
+  if (typeof process.env.OCD_API_KEY === 'undefined') {
+    callback(null, {
+      statusCode: 400,
+      body: JSON.stringify({
+        response: { status: { code: 403, message: 'missing API key' } },
+      }),
+    });
+    return;
+  }
   const query = event.queryStringParameters;
   query.key = process.env.OCD_API_KEY;
   opencage
