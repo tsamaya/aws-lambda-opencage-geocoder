@@ -561,19 +561,19 @@ run the tests
 ```
 $ npm test
 
-> aws-lambda-opencage-geocoder@0.1.0 pretest /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> aws-lambda-opencage-geocoder@1.0.0 pretest /Users/arnaud/projects/github/aws-lambda-opencage-geocoder
 > npm run lint
 
 
-> aws-lambda-opencage-geocoder@0.1.0 lint /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> aws-lambda-opencage-geocoder@1.0.0 lint /Users/arnaud/projects/github/aws-lambda-opencage-geocoder
 > eslint .
 
 
-> aws-lambda-opencage-geocoder@0.1.0 test /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> aws-lambda-opencage-geocoder@1.0.0 test /Users/arnaud/projects/github/aws-lambda-opencage-geocoder
 > jest --coverage
 
- PASS  __tests__/environment.spec.js
  PASS  __tests__/geocode.spec.js
+ PASS  __tests__/environment.spec.js
  PASS  __tests__/integration.spec.js
 -------------|----------|----------|----------|----------|-------------------|
 File         |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
@@ -583,9 +583,10 @@ All files    |      100 |      100 |      100 |      100 |                   |
 -------------|----------|----------|----------|----------|-------------------|
 
 Test Suites: 3 passed, 3 total
-Tests:       8 passed, 8 total
+Tests:       7 passed, 7 total
 Snapshots:   0 total
-Time:        1.306s
+Time:        1.404s
+Ran all test suites.
 ```
 
 Not to bad ?
