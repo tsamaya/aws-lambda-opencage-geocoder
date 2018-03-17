@@ -377,30 +377,34 @@ run the tests
 NB: remember to generate the .env file before running the test
 
 ```shell
+$ npm test
 
-> aws-lambda-opencage-geocoder@0.1.0 pretest /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> aws-lambda-opencage-geocoder@1.0.0 pretest /Users/arnaud/projects/github/aws-lambda-opencage-geocoder
 > npm run lint
 
 
-> aws-lambda-opencage-geocoder@0.1.0 lint /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> aws-lambda-opencage-geocoder@1.0.0 lint /Users/arnaud/projects/github/aws-lambda-opencage-geocoder
 > eslint .
 
 
-> aws-lambda-opencage-geocoder@0.1.0 test /Users/tsamaya/work/github/tsamaya/aws-lambda-opencage-geocoder
+> aws-lambda-opencage-geocoder@1.0.0 test /Users/arnaud/projects/github/aws-lambda-opencage-geocoder
 > jest --coverage
 
  PASS  __tests__/integration.spec.js
+  Integration Tests
+    ✓ geocode `Brandenburg Gate` (423ms)
+    ✓ geocode `Brandenburg Gate` with pretty (436ms)
+
 -------------|----------|----------|----------|----------|-------------------|
 File         |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
 -------------|----------|----------|----------|----------|-------------------|
-All files    |      xxx |      xxx |      xxx |      xxx |                   |
- opencage.js |      xxx |      xxx |      xxx |      xxx |  X,X              |
+All files    |    72.73 |       50 |    66.67 |    72.73 |                   |
+ opencage.js |    72.73 |       50 |    66.67 |    72.73 |          12,19,32 |
 -------------|----------|----------|----------|----------|-------------------|
-
 Test Suites: 1 passed, 1 total
 Tests:       2 passed, 2 total
 Snapshots:   0 total
-Time:        0.608s
+Time:        2.237s
 Ran all test suites.
 ```
 
@@ -416,7 +420,7 @@ const opencageAPI = jest.genMockFromModule('opencage-api-client');
 const geocode = query =>
   new Promise((resolve, reject) => {
     if (query.q === '52.5162767 13.3777025') {
-      resolve({ok: 'ok'});
+      resolve({ ok: 'ok' });
     } else if (query.q === 'networkerror') {
       reject(new Error('Mocked error'));
     } else {
