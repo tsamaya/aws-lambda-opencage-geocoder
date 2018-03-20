@@ -8,7 +8,7 @@ This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambd
 
 The following how-to section describes step by steps how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; then later, the [quick start](#quick-start) section describes how to just use this repo where the ready to use function.
 
-## How to create a AWS Lambda function
+## How to wrap OpenCage Data Geocoder with an AWS Lambda function
 
 We will create a Lambda Function using [node](https://nodejs.org/en/) and [serverless](https://serverless.com/framework/docs/) framework.
 
@@ -33,6 +33,8 @@ When you AWS account is ready to use, create the local profile for AWS:
 *NB* naming a profile is usefull when using more than one profile
 
 ### How to
+
+#### serverless boilerplate
 
 First we will create a boilerplate project for aws-nodejs
 
@@ -66,13 +68,14 @@ will output this directory structure
 
 `handler.js` contains a hello world example.
 
+#### Init and install dependencies
 
 Initialize node package file : `package.json`
 
     $ npm init -y
 
 
-Install dependencies
+*Install dependencies*
 
 	$ npm i -S opencage-api-client dotenv
 
@@ -94,7 +97,8 @@ custom:
     - environment.yml
 ```
 
-then Add a route to `hello` function (:warning: indentation is important)
+then Add a route to `hello` function (:warning: yaml file: indentation matters)
+
 ```yaml
 functions:
   hello:
@@ -105,7 +109,11 @@ functions:
           method: get # HTTP method for this endpoint
 ```
 
-Create environment.yml file
+#### Environment variables
+
+Following [12-Factors](https://12factor.net/) app third principle, we will use envirnoment vriable to store the OpenCage API key
+
+*Create `environment.yml` file*
 
     $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage dev
 
@@ -117,14 +125,14 @@ don't forget for the production environment to add the according stage
 
     $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage prod
 
-generate env file
+*Generate env file*
 
 ```shell
 $ serverless env generate
 Serverless: Creating .env file...
 ```    
 
-Quick test
+#### Quick test
 
 ```shell
 $ sls offline start
@@ -140,14 +148,21 @@ open your browser with : http://localhost:3000/hello
 
 the result payload is :
 ```JSON
-{"message":"Go Serverless v1.0! Your function executed successfully!","input":{"headers":{"Host":"localhost:3000","Connection":"keep-alive","Upgrade-Insecure-Requests":"1","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36","Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8","Accept-Encoding":"gzip, deflate, br","Accept-Language":"en-US,en;q=0.9,fr-FR;q=0.8,fr;q=0.7","Cookie":"_gauges_unique=1; wp-settings-1=libraryContent%3Dbrowse; wp-settings-time-1=1506863507; _ga=GA1.1.885111529.1449409931"},"path":"/hello","pathParameters":null,"requestContext":{"accountId":"offlineContext_accountId","resourceId":"offlineContext_resourceId","apiId":"offlineContext_apiId","stage":"dev","requestId":"offlineContext_requestId_","identity":{"cognitoIdentityPoolId":"offlineContext_cognitoIdentityPoolId","accountId":"offlineContext_accountId","cognitoIdentityId":"offlineContext_cognitoIdentityId","caller":"offlineContext_caller","apiKey":"offlineContext_apiKey","sourceIp":"127.0.0.1","cognitoAuthenticationType":"offlineContext_cognitoAuthenticationType","cognitoAuthenticationProvider":"offlineContext_cognitoAuthenticationProvider","userArn":"offlineContext_userArn","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36","user":"offlineContext_user"},"authorizer":{"principalId":"offlineContext_authorizer_principalId"},"resourcePath":"/hello","httpMethod":"GET"},"resource":"/hello","httpMethod":"GET","queryStringParameters":null,"stageVariables":null,"body":null,"isOffline":true}}
+{
+	"message":"Go Serverless v1.0! Your function executed successfully!",
+    "input":{
+        "headers":{"Host":"localhost:3000","Connection":"keep-alive",
+        [...]
+        "resourcePath":"/hello","httpMethod":"GET"},"resource":"/hello","httpMethod":"GET"
+    }
+}
 ```
 
 Stop the server with `CTRL + C`
 
-Let's start coding
+#### Let's start coding
 
-create a new file
+*Create a new file*
 
 ```shell
 $ touch opencage.js
@@ -213,7 +228,7 @@ edit the `serverless.yml` file adding the following lines alignes with the hello
           path: geocode # Path for this endpoint
           method: get # HTTP method for this endpoint
 ```
-:warning: indentation is important
+:warning: indentation
 
 now test it with
 
@@ -225,7 +240,7 @@ $ curl -i -v "http://localhost:3000/geocode?q=tour%20eiffel"
 $ curl -i -v "http://localhost:3000/geocode?q=tour%20eiffel&limit=3&language=fr"
 ```
 
-### deploy
+#### deploy
 
 	$ sls --aws-profile <namedProfile> --stage <stage> deploy
 
@@ -263,7 +278,7 @@ functions:
   geocode: aws-lambda-opencage-geocoder-dev-geocode
 ```
 
-we can now test it:
+we can now test it with the endpoint given by the last command output:
 
 ```shell
 $ curl -i -v "https://jvkdf2pe18.execute-api.us-east-1.amazonaws.com/dev/geocode?q=tour%20eiffel"
@@ -271,11 +286,13 @@ $ curl -i -v "https://jvkdf2pe18.execute-api.us-east-1.amazonaws.com/dev/geocode
 $ curl -i -v "https://jvkdf2pe18.execute-api.us-east-1.amazonaws.com/dev/geocode?q=tour%20eiffel&limit=3&language=fr"
 ```
 
+After deployment the `.env` file has been deleted. If needed, think about creating a new one (see [Environment variables](# Environment-variables).
+
 ## To go further
 
-we will now add a linter, a code style formatter and some unit tests:
+We will now add a linter, a code style formatter and some unit tests:
 
-install dev-dependencies
+#### install dev-dependencies
 
 - linter packages
 ```
@@ -306,6 +323,8 @@ first edit the `package.json` file script section
 },
 ```
 
+#### linter
+
 create an `.eslintignore` file
 
 ```
@@ -321,7 +340,7 @@ module.exports = {
 };
 ```
 
-To avoid linter issues with the `hello` handler, you can delete or at least comment it out. Do not forget to remove on comment also the function part in the `serverless.yml` file.
+#### code style
 
 create an empty `.prettierignore` file
 
@@ -334,7 +353,13 @@ module.exports = {
 };
 ```
 
-*Nb*: without a git pre-commit hook here, the prettier configuration is only useful when your texteditor or IDE is configured to use prettier (see [prettier documentation](https://prettier.io/docs/en/editors.html))
+*Nb*: without a git pre-commit hook here, the prettier configuration is only useful when your texteditor or IDE is configured to use prettier (see [prettier documentation](https://prettier.io/docs/en/editors.html)). To configure a pre-commit hook, please referer to the same prettier documentation
+
+#### deactivate hello function
+
+To avoid linter issues with the `hello` handler, you can delete or at least comment it out. Do not forget to remove or comment the function part, as well, in the `serverless.yml` file.
+
+#### unit tests
 
 Create two folders : `__tests__` and `__mocks__`
 
@@ -383,7 +408,7 @@ run the tests
 
     $ npm test
 
-NB: remember to generate the .env file before running the test
+NB: remember to generate the `.env` file before running the test
 
 ```shell
 $ npm test
@@ -602,7 +627,7 @@ check the [prerequisite](#Prerequisites) and the [AWS-CLI configuration](#AWS---
 - clone this repo
 - `$ cd path/to/this/repo`
 
-### Setup
+#### Setup
 
     $ npm i
 
@@ -615,11 +640,11 @@ create .env file
     $ env generate
 
 
-### Running locally
+#### Running locally
 
     $ sls offline start
 
-### Local tests
+#### Local tests
 
 ```
 $ curl -i -v "http://localhost:3000/geocode?q=berlin"
@@ -627,12 +652,13 @@ $ curl -i -v "http://localhost:3000/geocode?q=berlin"
 $ curl -i -v "http://localhost:3000/geocode?q=berlin&limit=3&language=fr"
 ```
 
-### deploy
+#### deploy
 
     $ sls --aws-profile <namedProfile> --stage <stage> deploy
 
-### display logs
+#### display logs
 
+    $ sls --aws-profile <namedProfile> --stage <stage> logs -f geocode -t
 
 ## Resources
 
