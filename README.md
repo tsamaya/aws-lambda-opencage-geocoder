@@ -2,11 +2,21 @@
 
 This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambda/) function to wrap OpenCage Data [Geocoder](https://geocoder.opencagedata.com/) API.
 
+### OpenCage Geocoder
+
+An API to convert coordinates to and from places : Easy, Open, Worldwide, Affordable
+
+### What Is AWS Lambda?
+
+AWS Lambda is a compute service that lets you run code without provisioning or managing servers. AWS Lambda executes your code only when needed and scales automatically, from a few requests per day to thousands per second. You pay only for the compute time you consume - there is no charge when your code is not running.
+
+## Introduction
+
+The following how-to section describes step-by-step how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; then later, the [quick start](#quick-start) section describes how to use this repo where the  function is ready to use.
+
 [![CircleCI](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder.svg?style=svg)](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder)
 [![codecov](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder/branch/master/graph/badge.svg)](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-
-The following how-to section describes step by steps how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; then later, the [quick start](#quick-start) section describes how to just use this repo where the ready to use function.
 
 ## How to wrap OpenCage Data Geocoder with an AWS Lambda function
 
@@ -15,34 +25,37 @@ We will create a Lambda Function using [node](https://nodejs.org/en/) and [serve
 ### Prerequisites
 
 - node, npm or yarn
-- aws-cli (optional but I found it useful)
-- serverless: for convienience install it globally  
-`$ npm install -g serverless`
+- aws-cli (optional but useful)
+- serverless: for convenience install it globally:  
+
+    $ npm install -g serverless
+
+    _Assuming serverless has been setup globally, the `sls` and `serverless` commands are available._
 
 ### AWS - Credentials
-To deploy; an AWS account is needed, AWS lambda is available with the free tier account for 12 months : check [aws pricing](https://aws.amazon.com/lambda/pricing/).
+For deployment; an AWS account is needed. AWS lambda is available with the free tier account for 12 months : check [AWS pricing](https://aws.amazon.com/lambda/pricing/).
 
-[Watch the video on setting up credentials](https://www.youtube.com/watch?v=KngM5bfpttA)
-
-Or look at serverles documentatoon about [credentials](https://serverless.com/framework/docs/providers/aws/guide/credentials/)
+Set up the credentials on your development machine:
+- [Watch the video on setting up credentials](https://www.youtube.com/watch?v=KngM5bfpttA)
+- Or look at serverless documentation about [credentials](https://serverless.com/framework/docs/providers/aws/guide/credentials/)
 
 When you AWS account is ready to use, create the local profile for AWS:
 
     $ serverless config credentials --provider aws --key <YOUR-AWS-KEY> --secret <YOUR-AWS-SECRET> --profile <namedProfile>
 
-*NB* naming a profile is usefull when using more than one profile
+*NB*: naming a profile is useful when using more than one profile
 
 ### How to
 
 #### serverless boilerplate
 
-First we will create a boilerplate project for aws-nodejs
+As a starting point, we will create a boilerplate project for aws-nodejs
 
     $ serverless create --template aws-nodejs --path aws-lambda-opencage-geocoder
 
 ```shell
 Serverless: Generating boilerplate...
-Serverless: Generating boilerplate in "/Users/tsamaya/work/temp/aws-lambda-opencage-geocoder"
+Serverless: Generating boilerplate in "/Users/tsamaya/work/aws-lambda-opencage-geocoder"
  _______                             __
 |   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
 |   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
@@ -111,7 +124,7 @@ functions:
 
 #### Environment variables
 
-Following [12-Factors](https://12factor.net/) app third principle, we will use envirnoment vriable to store the OpenCage API key
+Following [12-Factors](https://12factor.net/) App third principle, we will use an  environment variable to store the OpenCage API key
 
 *Create `environment.yml` file*
 
@@ -353,11 +366,11 @@ module.exports = {
 };
 ```
 
-*Nb*: without a git pre-commit hook here, the prettier configuration is only useful when your texteditor or IDE is configured to use prettier (see [prettier documentation](https://prettier.io/docs/en/editors.html)). To configure a pre-commit hook, please referer to the same prettier documentation
+*NB*: without a git pre-commit hook here, the prettier configuration is only useful when your texteditor or IDE is configured to use prettier (see [prettier documentation](https://prettier.io/docs/en/editors.html)). To configure a pre-commit hook, please refer to the same documentation.
 
 #### deactivate hello function
 
-To avoid linter issues with the `hello` handler, you can delete or at least comment it out. Do not forget to remove or comment the function part, as well, in the `serverless.yml` file.
+To avoid linter issues with the `hello` handler, you can delete, or at least comment it out. Do not forget to remove or comment the function part, as well, in the `serverless.yml` file.
 
 #### unit tests
 
@@ -408,7 +421,7 @@ run the tests
 
     $ npm test
 
-NB: remember to generate the `.env` file before running the test
+*NB*: remember to generate the `.env` file before running the tests
 
 ```shell
 $ npm test
@@ -444,7 +457,7 @@ Ran all test suites.
 
 Isn't it great ?
 
-As we disabled the test when running in CI you can imagine we will create test for CI mocking the OpenCage real API request.
+As we disabled the tests, when running in CI, you can imagine we will create tests for CI, mocking the OpenCage real API requests.
 
     $ touch __mocks__/opencage-api-client.js
 
@@ -509,7 +522,7 @@ describe('OpenCage Lib suite', () => {
 });
 ```
 
-let's improve the code coverage by adding some rainy tests to `geocode.spec.js` file.
+Let's improve the code coverage by adding some rainy tests to `geocode.spec.js` file.
 
 ```javascript
 describe('Rainy Tests', () => {
@@ -559,7 +572,7 @@ describe('Rainy Tests', () => {
 });
 ```
 
-now to prevent errors on missing `.env` file, create a dedicated test
+Now to prevent errors on missing `.env` file, let's create a dedicated test
 
     $ touch __tests__/environment.spec.js
 
@@ -614,13 +627,14 @@ Time:        1.404s
 Ran all test suites.
 ```
 
-Not to bad ?
+Not to bad, isn't it ?
 
-I hope you enjoyed this tutorial. Feel free to reach me with whatever channel suits you for comment issue, or coffee!
+I hope you enjoyed this tutorial. Feel free to reach me with whatever channel suits you for comment, issue, or coffee!
 
 ## Quick start
+Once the quick start is at the bottom of the README !
 
-check the [prerequisite](#Prerequisites) and the [AWS-CLI configuration](#AWS---Credentials)
+Check the [prerequisite](#Prerequisites) and the [AWS-CLI configuration](#AWS---Credentials)
 
 #### Clone the repo
 
@@ -631,14 +645,13 @@ check the [prerequisite](#Prerequisites) and the [AWS-CLI configuration](#AWS---
 
     $ npm i
 
-create `environment.yml` file
+Create `environment.yml` file
 
-    $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage dev
+    $ sls env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage dev
 
-create .env file
+Create `.env` file
 
-    $ env generate
-
+    $ sls env generate
 
 #### Running locally
 
@@ -663,7 +676,6 @@ $ curl -i -v "http://localhost:3000/geocode?q=berlin&limit=3&language=fr"
 ## Resources
 
 - serverless quick start [guide](https://serverless.com/framework/docs/providers/aws/guide/quick-start/)
-
 
 ## Licensing
 
