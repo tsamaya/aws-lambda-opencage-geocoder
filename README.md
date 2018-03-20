@@ -15,7 +15,7 @@ We will create a Lambda Function using [node](https://nodejs.org/en/) and [serve
 ### Prerequisites
 
 - node, npm or yarn
-- aws-cli ?
+- aws-cli (optional but I found it useful)
 - serverless: for convienience install it globally  
 `$ npm install -g serverless`
 
@@ -97,7 +97,7 @@ custom:
     - environment.yml
 ```
 
-then Add a route to `hello` function (:warning: yaml file: indentation matters)
+then Add a route to `hello` function. :warning: yaml file: indentation matters.
 
 ```yaml
 functions:
@@ -219,7 +219,7 @@ module.exports.geocode = (event, context, callback) => {
 };
 ```
 
-edit the `serverless.yml` file adding the following lines alignes with the hello function:
+edit the `serverless.yml` file adding the following lines aligns with the hello function:
 ```yml
   geocode:
     handler: opencage.geocode
