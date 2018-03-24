@@ -2,6 +2,15 @@
 
 This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambda/) function to wrap OpenCage Data [Geocoder](https://geocoder.opencagedata.com/) API.
 
+Why a function lambda to wrap a REST API? 
+You may don't want to expose your own OpenCage Data API key to your client end users, analyse requests sent to Open Cage, etc. A solution is to proxy the requests on your own infrastructure, and here comes AWS lambda.
+
+For once, the Quick Start guide will be at the end of this README. Indeed, the all purpose of this repositiory is describing step-by-step how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; so later, you will find a [quick start](#quick-start) guide to use the function by cloning this repository.
+
+[![CircleCI](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder.svg?style=svg)](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder)
+[![codecov](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder/branch/master/graph/badge.svg)](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
 ### OpenCage Geocoder
 
 An API to convert coordinates to and from places : Easy, Open, Worldwide, Affordable
@@ -9,14 +18,6 @@ An API to convert coordinates to and from places : Easy, Open, Worldwide, Afford
 ### What Is AWS Lambda?
 
 AWS Lambda is a compute service that lets you run code without provisioning or managing servers. AWS Lambda executes your code only when needed and scales automatically, from a few requests per day to thousands per second. You pay only for the compute time you consume - there is no charge when your code is not running.
-
-## Introduction
-
-The following how-to section describes step-by-step how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; then later, the [quick start](#quick-start) section describes how to use this repo where the  function is ready to use.
-
-[![CircleCI](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder.svg?style=svg)](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder)
-[![codecov](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder/branch/master/graph/badge.svg)](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ## How to wrap OpenCage Data Geocoder with an AWS Lambda function
 
@@ -33,7 +34,7 @@ We will create a Lambda Function using [node](https://nodejs.org/en/) and [serve
     _Assuming serverless has been setup globally, the `sls` and `serverless` commands are available._
 
 ### AWS - Credentials
-For deployment; an AWS account is needed. AWS lambda is available with the free tier account for 12 months : check [AWS pricing](https://aws.amazon.com/lambda/pricing/).
+For deployment, an AWS account is needed. AWS lambda is available with the free tier account for 12 months : check [AWS pricing](https://aws.amazon.com/lambda/pricing/).
 
 Set up the credentials on your development machine:
 - [Watch the video on setting up credentials](https://www.youtube.com/watch?v=KngM5bfpttA)
@@ -134,7 +135,7 @@ Following [12-Factors](https://12factor.net/) App third principle, we will use a
 Serverless: Successfuly set OCD_API_KEY 🎉
 ```
 
-don't forget for the production environment to add the according stage
+For the production environment, don't forget to add the according stage:
 
     $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage prod
 
@@ -675,7 +676,7 @@ $ curl -i -v "http://localhost:3000/geocode?q=berlin&limit=3&language=fr"
 
 ## Resources
 
-- serverless quick start [guide](https://serverless.com/framework/docs/providers/aws/guide/quick-start/)
+- serverless framework [guide](https://serverless.com/framework/docs/providers/aws/guide/)
 
 ## Licensing
 
