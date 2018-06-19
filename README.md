@@ -1,6 +1,6 @@
 # aws-lambda-opencage-geocoder
 
-This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambda/) function to wrap OpenCage Data [Geocoder](https://geocoder.opencagedata.com/) API.
+This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambda/) function to wrap OpenCage Data [Geocoder](https://opencagedata.com) API.
 
 Why a function lambda to wrap a REST API? 
 You may don't want to expose your own OpenCage Data API key to your client end users, analyse requests sent to Open Cage, etc. A solution is to proxy the requests on your own infrastructure, and here comes AWS lambda.
