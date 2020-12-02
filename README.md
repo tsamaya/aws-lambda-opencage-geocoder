@@ -1,5 +1,7 @@
 # aws-lambda-opencage-geocoder
 
+:warning: __README has not been updated with latest serversless and aws lambda runtime__
+
 This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambda/) function to wrap OpenCage Data [Geocoder](https://opencagedata.com) API.
 
 Why a function lambda to wrap a REST API? 

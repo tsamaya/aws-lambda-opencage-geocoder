@@ -8,26 +8,24 @@ describe('Integration Tests', () => {
     test.skip('CI : skipping integration tests', () => {});
     return;
   }
-  test('geocode `Brandenburg Gate`', done => {
+  test('geocode `Brandenburg Gate`', async () => {
     const event = {
       queryStringParameters: { q: 'Brandenburg Gate' },
     };
     const context = null;
     const callback = (ctx, data) => {
       expect(data).toBeTruthy();
-      done();
     };
-    opencage.geocode(event, context, callback);
+    await opencage.geocode(event, context, callback);
   });
-  test('geocode `Brandenburg Gate` with pretty', done => {
+  test('geocode `Brandenburg Gate` with pretty', async () => {
     const event = {
       queryStringParameters: { q: 'Brandenburg Gate', pretty: '1' },
     };
     const context = null;
     const callback = (ctx, data) => {
       expect(data).toBeTruthy();
-      done();
     };
-    opencage.geocode(event, context, callback);
+    await opencage.geocode(event, context, callback);
   });
 });

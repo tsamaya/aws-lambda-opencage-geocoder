@@ -1,8 +1,8 @@
 const brandenburg = require('./stubs/brandenburg_gate.json');
 
-const opencageAPI = jest.genMockFromModule('opencage-api-client');
+const opencageAPI = jest.createMockFromModule('opencage-api-client');
 
-const geocode = query =>
+const geocode = (query) =>
   new Promise((resolve, reject) => {
     if (query.q === '52.5162767 13.3777025') {
       resolve(brandenburg);
