@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-done-callback */
 const opencage = require('../opencage');
 
 describe('OpenCage Lib suite', () => {
@@ -7,7 +8,7 @@ describe('OpenCage Lib suite', () => {
   });
   describe('Rainy Tests', () => {
     describe('#Query String', () => {
-      test('no queryStringParameters', done => {
+      test('no queryStringParameters', (done) => {
         const event = {};
         const context = null;
         const callback = (ctx, data) => {
@@ -26,7 +27,7 @@ describe('OpenCage Lib suite', () => {
       afterAll(() => {
         process.env.OCD_API_KEY = backup;
       });
-      test('no env var', done => {
+      test('no env var', (done) => {
         const event = {
           queryStringParameters: { q: 'berlin' },
         };
@@ -46,7 +47,7 @@ describe('OpenCage Lib suite', () => {
     afterAll(() => {
       jest.unmock('opencage-api-client');
     });
-    test('reverse geocode `Brandenburg Gate`', done => {
+    test('reverse geocode `Brandenburg Gate`', (done) => {
       const event = {
         queryStringParameters: { q: '52.5162767 13.3777025' },
       };
@@ -58,7 +59,7 @@ describe('OpenCage Lib suite', () => {
       };
       opencage.geocode(event, context, callback);
     });
-    test('rejection', done => {
+    test('rejection', (done) => {
       const event = {
         queryStringParameters: { q: 'networkerror' },
       };
