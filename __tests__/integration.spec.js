@@ -8,7 +8,7 @@ describe('Integration Tests', () => {
     test.skip('CI : skipping integration tests', () => {});
     return;
   }
-  test('geocode `Brandenburg Gate`', done => {
+  test('geocode `Brandenburg Gate`', (done) => {
     const event = {
       queryStringParameters: { q: 'Brandenburg Gate' },
     };
@@ -19,7 +19,7 @@ describe('Integration Tests', () => {
     };
     opencage.geocode(event, context, callback);
   });
-  test('geocode `Brandenburg Gate` with pretty', done => {
+  test('geocode `Brandenburg Gate` with pretty', (done) => {
     const event = {
       queryStringParameters: { q: 'Brandenburg Gate', pretty: '1' },
     };

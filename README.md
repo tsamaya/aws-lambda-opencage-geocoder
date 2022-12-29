@@ -2,7 +2,7 @@
 
 This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambda/) function to wrap OpenCage Data [Geocoder](https://opencagedata.com) API.
 
-Why a function lambda to wrap a REST API? 
+Why a function lambda to wrap a REST API?
 You may don't want to expose your own OpenCage Data API key to your client end users, analyse requests sent to Open Cage, etc. A solution is to proxy the requests on your own infrastructure, and here comes AWS lambda.
 
 For once, the Quick Start guide will be at the end of this README. Indeed, the all purpose of this repositiory is describing step-by-step how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; so later, you will find a [quick start](#quick-start) guide to use the function by cloning this repository.
@@ -27,16 +27,18 @@ We will create a Lambda Function using [node](https://nodejs.org/en/) and [serve
 
 - node, npm or yarn
 - aws-cli (optional but useful)
-- serverless: for convenience install it globally:  
+- serverless: for convenience install it globally:
 
-    $ npm install -g serverless
+  $ npm install -g serverless
 
-    _Assuming serverless has been setup globally, the `sls` and `serverless` commands are available._
+  _Assuming serverless has been setup globally, the `sls` and `serverless` commands are available._
 
 ### AWS - Credentials
+
 For deployment, an AWS account is needed. AWS lambda is available with the free tier account for 12 months : check [AWS pricing](https://aws.amazon.com/lambda/pricing/).
 
 Set up the credentials on your development machine:
+
 - [Watch the video on setting up credentials](https://www.youtube.com/watch?v=KngM5bfpttA)
 - Or look at serverless documentation about [credentials](https://serverless.com/framework/docs/providers/aws/guide/credentials/)
 
@@ -44,7 +46,7 @@ When you AWS account is ready to use, create the local profile for AWS:
 
     $ serverless config credentials --provider aws --key <YOUR-AWS-KEY> --secret <YOUR-AWS-SECRET> --profile <namedProfile>
 
-*NB*: naming a profile is useful when using more than one profile
+_NB_: naming a profile is useful when using more than one profile
 
 ### How to
 
@@ -73,6 +75,7 @@ Serverless: Successfully generated boilerplate for template: "aws-nodejs"
     $ ls -al
 
 will output this directory structure
+
 ```
 .
 ├── .gitignore
@@ -88,12 +91,12 @@ Initialize node package file : `package.json`
 
     $ npm init -y
 
+_Install dependencies_
 
-*Install dependencies*
-
-	$ npm i -S opencage-api-client dotenv
+    $ npm i -S opencage-api-client dotenv
 
 - serverless helpers
+
 ```
  $ npm i -D serverless-env-generator serverless-offline
 ```
@@ -125,9 +128,9 @@ functions:
 
 #### Environment variables
 
-Following [12-Factors](https://12factor.net/) App third principle, we will use an  environment variable to store the OpenCage API key
+Following [12-Factors](https://12factor.net/) App third principle, we will use an environment variable to store the OpenCage API key
 
-*Create `environment.yml` file*
+_Create `environment.yml` file_
 
     $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage dev
 
@@ -139,12 +142,12 @@ For the production environment, don't forget to add the according stage:
 
     $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage prod
 
-*Generate env file*
+_Generate env file_
 
 ```shell
 $ serverless env generate
 Serverless: Creating .env file...
-```    
+```
 
 #### Quick test
 
@@ -161,6 +164,7 @@ Serverless: Offline listening on http://localhost:3000
 open your browser with : http://localhost:3000/hello
 
 the result payload is :
+
 ```JSON
 {
 	"message":"Go Serverless v1.0! Your function executed successfully!",
@@ -176,7 +180,7 @@ Stop the server with `CTRL + C`
 
 #### Let's start coding
 
-*Create a new file*
+_Create a new file_
 
 ```shell
 $ touch opencage.js
@@ -218,13 +222,13 @@ module.exports.geocode = (event, context, callback) => {
   query.key = process.env.OCD_API_KEY;
   opencage
     .geocode(query)
-    .then(data => {
+    .then((data) => {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify(data),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       callback(null, {
         statusCode: 400,
         body: JSON.stringify(err),
@@ -234,14 +238,16 @@ module.exports.geocode = (event, context, callback) => {
 ```
 
 edit the `serverless.yml` file adding the following lines aligns with the hello function:
+
 ```yml
-  geocode:
-    handler: opencage.geocode
-    events: # The Events that trigger this Function
-      - http: # This creates an API Gateway HTTP endpoint which can be used to trigger this function.  Learn more in "events/apigateway"
-          path: geocode # Path for this endpoint
-          method: get # HTTP method for this endpoint
+geocode:
+  handler: opencage.geocode
+  events: # The Events that trigger this Function
+    - http: # This creates an API Gateway HTTP endpoint which can be used to trigger this function.  Learn more in "events/apigateway"
+        path: geocode # Path for this endpoint
+        method: get # HTTP method for this endpoint
 ```
+
 :warning: indentation
 
 now test it with
@@ -256,7 +262,7 @@ $ curl -i -v "http://localhost:3000/geocode?q=tour%20eiffel&limit=3&language=fr"
 
 #### deploy
 
-	$ sls --aws-profile <namedProfile> --stage <stage> deploy
+    $ sls --aws-profile <namedProfile> --stage <stage> deploy
 
 for instance `$ sls --aws-profile tsamaya --stage dev deploy`
 
@@ -309,16 +315,19 @@ We will now add a linter, a code style formatter and some unit tests:
 #### install dev-dependencies
 
 - linter packages
+
 ```
 $ npm i -D eslint eslint-config-airbnb-base eslint-plugin-import eslint-config-prettier eslint-plugin-jest eslint-plugin-prettier
 ```
 
 - code formatting helper
+
 ```
 $ npm i -D prettier
 ```
 
 - test and coverage
+
 ```
 $ npm i -D jest codecov
 ```
@@ -350,7 +359,11 @@ create an `.eslintrc.js` file
 
 ```javascript
 module.exports = {
-  extends: ['airbnb-base', 'plugin:jest/recommended', 'plugin:prettier/recommended']
+  extends: [
+    'airbnb-base',
+    'plugin:jest/recommended',
+    'plugin:prettier/recommended',
+  ],
 };
 ```
 
@@ -363,11 +376,11 @@ create a `.prettierrc.js` file
 ```javascript
 module.exports = {
   singleQuote: true,
-  trailingComma: 'es5'
+  trailingComma: 'es5',
 };
 ```
 
-*NB*: without a git pre-commit hook here, the prettier configuration is only useful when your texteditor or IDE is configured to use prettier (see [prettier documentation](https://prettier.io/docs/en/editors.html)). To configure a pre-commit hook, please refer to the same documentation.
+_NB_: without a git pre-commit hook here, the prettier configuration is only useful when your texteditor or IDE is configured to use prettier (see [prettier documentation](https://prettier.io/docs/en/editors.html)). To configure a pre-commit hook, please refer to the same documentation.
 
 #### deactivate hello function
 
@@ -393,7 +406,7 @@ describe('Integration Tests', () => {
     test.skip('CI : skipping integration tests'); // eslint-disable-line
     return;
   }
-  test('geocode `Brandenburg Gate`', done => {
+  test('geocode `Brandenburg Gate`', (done) => {
     const event = {
       queryStringParameters: { q: 'Brandenburg Gate' },
     };
@@ -404,7 +417,7 @@ describe('Integration Tests', () => {
     };
     opencage.geocode(event, context, callback);
   });
-  test('geocode `Brandenburg Gate` with pretty', done => {
+  test('geocode `Brandenburg Gate` with pretty', (done) => {
     const event = {
       queryStringParameters: { q: 'Brandenburg Gate', pretty: '1' },
     };
@@ -422,7 +435,7 @@ run the tests
 
     $ npm test
 
-*NB*: remember to generate the `.env` file before running the tests
+_NB_: remember to generate the `.env` file before running the tests
 
 ```shell
 $ npm test
@@ -465,7 +478,7 @@ As we disabled the tests, when running in CI, you can imagine we will create tes
 ```javascript
 const opencageAPI = jest.genMockFromModule('opencage-api-client');
 
-const geocode = query =>
+const geocode = (query) =>
   new Promise((resolve, reject) => {
     if (query.q === '52.5162767 13.3777025') {
       resolve({ ok: 'ok' });
@@ -496,7 +509,7 @@ describe('OpenCage Lib suite', () => {
     afterAll(() => {
       jest.unmock('opencage-api-client');
     });
-    test('reverse geocode `Brandenburg Gate`', done => {
+    test('reverse geocode `Brandenburg Gate`', (done) => {
       const event = {
         queryStringParameters: { q: '52.5162767 13.3777025' },
       };
@@ -508,7 +521,7 @@ describe('OpenCage Lib suite', () => {
       };
       opencage.geocode(event, context, callback);
     });
-    test('rejection', done => {
+    test('rejection', (done) => {
       const event = {
         queryStringParameters: { q: 'networkerror' },
       };
@@ -528,7 +541,7 @@ Let's improve the code coverage by adding some rainy tests to `geocode.spec.js` 
 ```javascript
 describe('Rainy Tests', () => {
   describe('#Query String', () => {
-    test('no queryStringParameters', done => {
+    test('no queryStringParameters', (done) => {
       const event = {};
       const context = null;
       const callback = (ctx, data) => {
@@ -553,7 +566,7 @@ describe('Rainy Tests', () => {
     afterAll(() => {
       process.env.OCD_API_KEY = backup;
     });
-    test('no env var', done => {
+    test('no env var', (done) => {
       const event = {
         queryStringParameters: { q: 'berlin' },
       };
@@ -633,6 +646,7 @@ Not to bad, isn't it ?
 I hope you enjoyed this tutorial. Feel free to reach me with whatever channel suits you for comment, issue, or coffee!
 
 ## Quick start
+
 Once the quick start is at the bottom of the README !
 
 Check the [prerequisite](#Prerequisites) and the [AWS-CLI configuration](#AWS---Credentials)

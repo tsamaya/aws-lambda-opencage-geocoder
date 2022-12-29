@@ -9,13 +9,13 @@ const doRequest = (query, callback) => {
   const pretty = query.pretty === '1' ? '  ' : null;
   opencageAPI
     .geocode(params)
-    .then(data => {
+    .then((data) => {
       callback(null, {
         statusCode: 200,
         body: JSON.stringify(data, null, pretty),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       // console.log(err); // eslint-disable-line
       callback(null, {
         statusCode: 400,
