@@ -5,7 +5,7 @@ This repository shows how to create an [AWS lambda](https://aws.amazon.com/lambd
 Why a function lambda to wrap a REST API?
 You may don't want to expose your own OpenCage Data API key to your client end users, analyse requests sent to Open Cage, etc. A solution is to proxy the requests on your own infrastructure, and here comes AWS lambda.
 
-For once, the Quick Start guide will be at the end of this README. Indeed, the all purpose of this repositiory is describing step-by-step how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; so later, you will find a [quick start](#quick-start) guide to use the function by cloning this repository.
+For once, the Quick Start guide will be at the end of this README. Indeed, the all purpose of this repository is describing step-by-step how to create the AWS lambda function using [serverless](https://serverless.com/) and how to deploy it on AWS; so later, you will find a [quick start](#quick-start) guide to use the function by cloning this repository.
 
 [![CircleCI](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder.svg?style=svg)](https://circleci.com/gh/tsamaya/aws-lambda-opencage-geocoder)
 [![codecov](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder/branch/master/graph/badge.svg)](https://codecov.io/gh/tsamaya/aws-lambda-opencage-geocoder)
@@ -135,7 +135,7 @@ _Create `environment.yml` file_
     $ serverless env --attribute OCD_API_KEY --value <YOUR-OPEN-CAGE-API-KEY> --stage dev
 
 ```shell
-Serverless: Successfuly set OCD_API_KEY 🎉
+Serverless: Successfully set OCD_API_KEY 🎉
 ```
 
 For the production environment, don't forget to add the according stage:
@@ -602,7 +602,7 @@ describe('Environment VARs suite', () => {
     test.skip('CI : skipping integration tests'); // eslint-disable-line
     return;
   }
-  test('OCD_API_KEY exisits', () => {
+  test('OCD_API_KEY exists', () => {
     expect(process.env.OCD_API_KEY).toBeTruthy();
   });
 });
