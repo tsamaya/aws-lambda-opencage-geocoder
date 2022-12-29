@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-done-callback */
 const opencage = require('../opencage');
 
 describe('OpenCage Lib suite', () => {
